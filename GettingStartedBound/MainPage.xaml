@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:S1000DIETP.Module.ContentViews.ViewModels"
+             xmlns:syncfusion="clr-namespace:Syncfusion.XForms.TreeView;assembly=Syncfusion.SfTreeView.XForms"
+             xmlns:converter="clr-namespace:GettingStartedBound.Converter"
+             xmlns:localBehaviors="clr-namespace:GettingStartedBound.Behavior"
+             x:Class="GettingStartedBound.MainPage">
+    <ContentPage.BindingContext>
+        <local:TreeViewModel x:Name="viewModel" />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <converter:IndentationLevelConverter x:Key="IndentationLevelConverter" />
+        <converter:TreeViewNodeArrowVisibilityConverter x:Key="HighLightedArrowVisibilityConverter" />
+        <Color x:Key="SelectedTreeViewNodeBackGroundColor">#8C8AFF</Color>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+
+            <syncfusion:SfTreeView x:Name="PMTree"
+                                 ItemsSource="{Binding PMitems}"
+                                 ChildPropertyName="ChildItems"
+                                 ExpanderWidth="0"
+                                 Indentation="0"
+                                 FullRowSelect="True"
+                                 AutoExpandMode="AllNodesExpanded"
+                                 ItemTemplateContextType="Node"
+                                 NodeSizeMode="Dynamic"
+                                 SelectionMode="Single"
+                                 FocusBorderThickness="0"
+                                 FocusBorderColor="Transparent"
+                                 SelectionBackgroundColor="LightBlue">
+                
+                <syncfusion:SfTreeView.Behaviors>
+                    <localBehaviors:TreeViewExpandedBehavior />
+                </syncfusion:SfTreeView.Behaviors>
+                
+                <syncfusion:SfTreeView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid MinimumHeightRequest="60">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="IndentationColumn"
+                                                  Width="{Binding Level, Converter={StaticResource IndentationLevelConverter}}}" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <BoxView IsVisible="True"
+                                     HeightRequest="1"
+                                     Grid.ColumnSpan="2"
+                                     VerticalOptions="End"
+                                     HorizontalOptions="FillAndExpand"
+                                     BackgroundColor="Silver" />
+
+                            <Grid Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <BoxView WidthRequest="5"
+                                         Color="Orange"
+                                         HorizontalOptions="StartAndExpand"
+                                         VerticalOptions="FillAndExpand"
+                                         Margin="5,12" />
+
+                                <Grid Margin="0,12"
+                                      Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackLayout VerticalOptions="Center">
+                                        <Label Text="{Binding Content.Title}"
+                                               VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding Content.DMC}"
+                                               VerticalTextAlignment="Center" />
+                                    </StackLayout>
+                                    
+                                </Grid>
+
+                                <Grid HeightRequest="12"
+                                      WidthRequest="12"
+                                      Grid.Column="1"
+                                      Rotation="45"
+                                      Margin="0,0,0,-6"
+                                      BackgroundColor="LightGray"
+                                      HorizontalOptions="Start"
+                                      VerticalOptions="End"
+                                      IsVisible="{Binding IsExpanded}"
+                                      x:Name="Arrow">
+                                    <BoxView Margin="1,1,0,0"
+                                             VerticalOptions="Fill"
+                                             HorizontalOptions="Fill"
+                                             Color="Blue">
+                                        <BoxView.Triggers>
+                                            <MultiTrigger TargetType="BoxView">
+                                                <MultiTrigger.Conditions>
+                                                    <BindingCondition Binding="{Binding SelectedItem, Source={x:Reference PMTree}, Converter={StaticResource HighLightedArrowVisibilityConverter}, ConverterParameter={x:Reference Arrow}}"
+                                                                      Value="True" />
+                                                </MultiTrigger.Conditions>
+                                                <MultiTrigger.Setters>
+                                                    <Setter Property="Color"
+                                                            Value="Red" />
+                                                </MultiTrigger.Setters>
+                                            </MultiTrigger>
+                                        </BoxView.Triggers>
+                                    </BoxView>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </syncfusion:SfTreeView.ItemTemplate>
+            </syncfusion:SfTreeView>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>
